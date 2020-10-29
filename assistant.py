@@ -118,13 +118,13 @@ class MyAssistant:
                 self.say_ip()
             elif text == 'turn on my lights':
                 self._assistant.stop_conversation()
-                requests.get("http://192.168.0.3:5000/on")
+                requests.get("http://localhost:5000/on")
             elif text == 'turn off my lights':
                 self._assistant.stop_conversation()
-                requests.get("http://192.168.0.3:5000/off")
+                requests.get("http://localhost:5000/off")
             elif text == 'vibe my lights':
                 self._assistant.stop_conversation()
-                requests.get("http://192.168.0.3:5000/rainbow")
+                requests.get("http://localhost:5000/rainbow")
  
             
         elif (event.type == EventType.ON_CONVERSATION_TURN_FINISHED
