@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
 # Copyright 2017 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """Run a recognizer using the Google Assistant Library with button support.
 
 The Google Assistant Library has direct access to the audio API, so this Python
@@ -118,14 +105,10 @@ class MyAssistant:
                 self.say_ip()
             elif text == 'turn on my lights':
                 self._assistant.stop_conversation()
-                requests.get("http://localhost:5000/on")
+                requests.get("http://localhost:5000/rainbow")
             elif text == 'turn off my lights':
                 self._assistant.stop_conversation()
                 requests.get("http://localhost:5000/off")
-            elif text == 'vibe my lights':
-                self._assistant.stop_conversation()
-                requests.get("http://localhost:5000/rainbow")
- 
             
         elif (event.type == EventType.ON_CONVERSATION_TURN_FINISHED
               or event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT
@@ -159,7 +142,6 @@ def locale_language():
     language, _ = locale.getdefaultlocale()
     return language
 
-
 def main():
     logging.basicConfig(level=logging.DEBUG)
     signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(0))
@@ -169,15 +151,12 @@ def main():
     parser.add_argument('--volume', type=volume, default=100)
     parser.add_argument('--model', default='./assets/Computer.pdml')
     args = parser.parse_args()
-
-    detector = snowboydecoder.HotwordDetector(args.model, sensitivity=0.5)
+    
     assistant = MyAssistant() 
     assistant.config()
 
-    while True:
-        logging.info('Speak own hotword and speak')
-        detector.start()
-        logging.info('Conversation started!')
-        assistant._start_convo()     
+    signal.signal(signal.SIGUSR1, lambda signum, frame: assistant._start_convo())
+    subprocess.run(['nodejs', 'picoVoice/index.js'])
+
 if __name__ == '__main__':
     main()

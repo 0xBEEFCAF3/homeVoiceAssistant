@@ -1,2 +1,4 @@
 *.swp
 *.out
+*.swo
+node_modules
